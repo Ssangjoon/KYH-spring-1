@@ -36,7 +36,6 @@ class ArticleControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attributeExists("articles")); // 해당 이름의 키가 있는지 검사
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 상세페이지 - 정상호출")
     @Test
     public void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
