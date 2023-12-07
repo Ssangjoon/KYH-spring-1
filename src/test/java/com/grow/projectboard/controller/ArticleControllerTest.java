@@ -24,7 +24,6 @@ class ArticleControllerTest {
         this.mvc = mvc;
     }
 
-    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 정상호출")
     @Test
     public void givenNothing_whenRequestingArticlesView_thenReturnsArticlesView() throws Exception {
@@ -32,7 +31,7 @@ class ArticleControllerTest {
         //When & Then
         mvc.perform(get("/articles"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_XML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML)) // 호환되는 타입이라면 pass
                 .andExpect(MockMvcResultMatchers.view().name("articles/index"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("articles")); // 해당 이름의 키가 있는지 검사
     }
@@ -45,7 +44,7 @@ class ArticleControllerTest {
         //When & Then
         mvc.perform(get("/articles/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_XML))
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
                 .andExpect(MockMvcResultMatchers.view().name("articles/detail"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("article"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("articleComments"));
@@ -59,7 +58,7 @@ class ArticleControllerTest {
         //When & Then
         mvc.perform(get("/articles/search"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_XML))
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
                 .andExpect(MockMvcResultMatchers.view().name("articles/search"));
     }
 
@@ -71,7 +70,7 @@ class ArticleControllerTest {
         //When & Then
         mvc.perform(get("/articles/search-hashtag"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_XML))
+                .andExpect(content().contentType(MediaType.TEXT_HTML))
                 .andExpect(MockMvcResultMatchers.view().name("articles/search-hashtag"));
     }
 
