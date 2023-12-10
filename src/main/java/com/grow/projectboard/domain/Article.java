@@ -42,17 +42,20 @@ public class Article extends AuditingFields{
     protected Article() {}
 
     // 메타데이터를 제외한 필드만
+    // private 제어자로 막아놓고 팩토리 메서드로 편리하게 바로 생성하자
     private Article(String title, String content, String hashtag) {
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
-    // 생성자 메서드
+
     public static Article of(String title, String content, String hashtag) {
         return new Article(title,content,hashtag);
     }
 
     // 동일성 동등성 검사
+    // 그냥 lombok의 EqualsAndHashCode를 사용하면 전체 필드를 비교하기 때문에
+    // Entity 클래스에서는 고유값인 id만 가지고 비교하기 위해서 따로 생성해 줌
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

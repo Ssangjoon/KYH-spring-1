@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("JPA 연결 테스트")
 @Import(JpaConfig.class)
+// Repository를 이용한 테스트를 진행할 때 인메모리 DB를 많이 사용한다.
+// 들어가보면 @Transactional 이 들어가 있다. 트랜잭션이 동작하기 때문에 기본적으로 롤백된다고 보면 된다.
 @DataJpaTest
 class JpaRepositoryTest {
 
@@ -51,6 +53,7 @@ class JpaRepositoryTest {
         String updatedHashtag = "#springboot";
         article.setHashtag(updatedHashtag);
 
+        // save 부분을 saveAndFlush 로 바꾸면 쿼리문을 확인할 수 있다. 다만 업데이트 내용이 DB에 적용되지는 않고 마찬가지로 롤백된다.
         Article savedArticle = articleRepository.saveAndFlush(article);
 
         assertThat(savedArticle).hasFieldOrPropertyWithValue("hashtag",updatedHashtag);

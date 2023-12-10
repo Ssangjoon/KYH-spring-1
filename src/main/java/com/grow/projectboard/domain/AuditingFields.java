@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 public class AuditingFields {
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) // DATE_TIME에 대한 format 설정
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false) // 최초 한번만 생성되어야 하므로 updatable false 설정
     private LocalDateTime createdAt; // 생성일시
     @CreatedBy
     @Column(nullable = false, updatable = false,length = 100)
