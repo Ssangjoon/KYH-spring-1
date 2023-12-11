@@ -17,6 +17,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayName("View 컨트롤러 - 게시글")
 @Import(SecurityConfig.class)
+// MVC를 위한 테스트. Web Layer만 로드하며
+// @Controller, @ControllerAdvice, @JsonComponent, @Convert, @GenericConverter,
+// @Filter, @WebMvcConfigurer, @HandlerMethodArgumentResolver 등의 항목만 스캔하도록 제한하여 가벼운 테스트가 가능하다.
+// 웹 어플리케이션과 관련된 Bean만 등록하기 때문에 통테보다 당연히 빠르다.
+// Mock을 기반으로 한 테스트이다.
 @WebMvcTest(ArticleController.class) // 대상이 되는 컨트롤러만 빈으로 읽어들인다.
 class ArticleControllerTest {
 
