@@ -23,7 +23,8 @@ spring:
     defer-datasource-initialization: true
     # hibernate가 entity를 보고 ddl문을 자동으로 짜줌
     hibernate.ddl-auto: create
-    open-in-view: true
+    # OSIV(Open Session In View) => Hibernate Session ...영속성 컨텍스트의 생존 범위 관련 ...
+    open-in-view: false
     show-sql: true
     properties:
       hibernate.format_sql: true # 쿼리 예쁘게 출력

@@ -2,6 +2,7 @@ package com.grow.projectboard.repository;
 
 import com.grow.projectboard.config.JpaConfig;
 import com.grow.projectboard.domain.Article;
+import com.grow.projectboard.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,36 +15,55 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("JPA 연결 테스트")
+// JPA에 관련된 요소들만 테스트하기 위한 어노테이션으로 JPA 테스트에 관련된 설정들만 적용해준다.
 @Import(JpaConfig.class)
-// Repository를 이용한 테스트를 진행할 때 인메모리 DB를 많이 사용한다.
+// 메모리상에 내부 데이터베이스를 생성하고 @Entity 클래스들을 등록하고 JPA Repository 설정들을 해준다.
+// (Repository layer의 테스트를 위해서 내장 Memory DB를 많이 사용)
+// (보통 @SpringBootTest+ Memory DB 연결 or @DataJpaTest)
+// (@SpringBootTest는 @Trasactional 없이 그대로 돌아가면서 영속성 컨텍스트의 쿼리들이 그대로 실행되면서 쿼리로그도 확인할 수 있다.)
 // 들어가보면 @Transactional 이 들어가 있다. 트랜잭션이 동작하기 때문에 기본적으로 롤백된다고 보면 된다.
 @DataJpaTest
 class JpaRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
-    public JpaRepositoryTest(@Autowired ArticleRepository articleRepository,@Autowired ArticleCommentRepository articleCommentRepository) {
+    private final UserAccountRepository userAccountRepository;
+    public JpaRepositoryTest(
+            @Autowired ArticleRepository articleRepository,
+            @Autowired ArticleCommentRepository articleCommentRepository,
+            @Autowired UserAccountRepository userAccountRepository
+    ) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
     @DisplayName("select 테스트")
     @Test
     void givenTestData_whenSelecting_thenWorksFine(){
-        List<Article> articles = articleRepository.findAll();
+        // Given
+        long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
 
-        assertThat(articles)
-                .isNotNull();
+        // When
+        articleRepository.save(article);
+
+        // Then
+        assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
     }
     @DisplayName("insert 테스트")
     @Test
-    void givenTestData_whenInserting_thenWorksFine(){
+    void givenTestData_whenInserting_thenWorksFine() {
+        // Given
         long previousCount = articleRepository.count();
-        Article article = Article.of("new article", "new content", "#spring");
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("uno", "pw", null, null, null));
+        Article article = Article.of(userAccount, "new article", "new content", "#spring");
 
-        Article savedArticle = articleRepository.save(article);
+        // When
+        articleRepository.save(article);
 
-        assertThat(articleRepository.count())
-                .isEqualTo(previousCount + 1);
+        // Then
+        assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
     }
 
     @DisplayName("update 테스트")

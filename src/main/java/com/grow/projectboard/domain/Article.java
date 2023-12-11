@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString
+@ToString(callSuper = true)
 @Table(name = "Article", indexes = {
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
@@ -29,13 +29,14 @@ public class Article extends AuditingFields{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Setter @ManyToOne(optional = false) private UserAccount userAccount; // 유저 정보 (ID)
     // nullable 기본 true라서 false가 아니라면 컬럼 생략 해도 된다.
     @Setter @Column(nullable = false) private String title; // 제목
     @Setter @Column(nullable = false, length = 10000) private String content; // 내용
     @Setter private String hashtag; // 해시태그
 
     @ToString.Exclude // 순환참조 방지
-    @OrderBy("id")
+    @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // 양방향 참조는 잘 안쓰기는 함
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
@@ -43,14 +44,15 @@ public class Article extends AuditingFields{
 
     // 메타데이터를 제외한 필드만
     // private 제어자로 막아놓고 팩토리 메서드로 편리하게 바로 생성하자
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
     }
 
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title,content,hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     // 동일성 동등성 검사
