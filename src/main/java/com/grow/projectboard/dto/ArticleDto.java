@@ -45,6 +45,4 @@ public record ArticleDto(
     // article은 dto를 몰라도 된다.
     // 오로지 dto만 연관관계 매핑을 위해 article의 정보를 알고 있다.
     // 즉 dto의 변경에 article이 영향을 받지 않는다.
-    //
-    // OSI
 }
