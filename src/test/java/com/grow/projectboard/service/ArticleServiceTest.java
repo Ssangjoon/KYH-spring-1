@@ -3,7 +3,6 @@ package com.grow.projectboard.service;
 import com.grow.projectboard.domain.Article;
 import com.grow.projectboard.domain.UserAccount;
 import com.grow.projectboard.dto.ArticleDto;
-import com.grow.projectboard.dto.ArticleUpdateDto;
 import com.grow.projectboard.dto.ArticleWithCommentsDto;
 import com.grow.projectboard.dto.UserAccountDto;
 import com.grow.projectboard.repository.ArticleRepository;
@@ -11,6 +10,7 @@ import com.grow.projectboard.type.SearchType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -25,12 +25,12 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.doNothing;
 
 @DisplayName("비즈니스 로직 - 게시글")
 @ExtendWith(MockitoExtension.class) // 스프링 테스트 패키지에 포함되어 있어 따로 설치할 필요 x
 class ArticleServiceTest {
-    @Inject private ArticleService sut; // System Under Test의 약어, 테스트 대상임을 의미
+    @InjectMocks
+    private ArticleService sut; // System Under Test의 약어, 테스트 대상임을 의미
     @Mock private ArticleRepository articleRepository;
 
     @DisplayName("검색어 없이 게시글을 검색하면, 게시글 페이지를 반환한다.")
@@ -55,14 +55,14 @@ class ArticleServiceTest {
         SearchType searchType = SearchType.TITLE;
         String searchKeyword = "title";
         Pageable pageable = Pageable.ofSize(20);
-        given(articleRepository.findByTitle(searchKeyword, pageable)).willReturn(Page.empty());
+        given(articleRepository.findByTitleContaining(searchKeyword, pageable)).willReturn(Page.empty());
 
         // When
         Page<ArticleDto> articles = sut.searchArticles(searchType, searchKeyword, pageable);
 
         // Then
         assertThat(articles).isEmpty();
-        then(articleRepository).should().findByTitle(searchKeyword, pageable);
+        then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
     @DisplayName("게시글을 조회하면, 게시글을 반환한다.")
@@ -121,6 +121,7 @@ class ArticleServiceTest {
         // Given
         Article article = createArticle();
         ArticleDto dto = createArticleDto("새 타이틀", "새 내용", "#springboot");
+            //
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
 
         // When
