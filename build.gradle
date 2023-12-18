@@ -28,15 +28,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     compileOnly 'org.projectlombok:lombok'
 
+    // Spring Boot DevTools - 프로젝트를 자동으로 재시작해주고, 정적 파일 수정 시 바로 반영해주는 라이브러리
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // rest repository - 엔티티 클래스와 레포지토리를 이용해서 바로 restful한 api 작성을 돕는 라이브러리
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    // Rest Repositories HAL Explorer - rest repository 기능을 쉽게 확인하고 테스트할 수 있는 라이브러리
     implementation 'org.springframework.data:spring-data-rest-hal-explorer'
     testImplementation 'org.assertj:assertj-core:3.11.1'
 

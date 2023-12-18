@@ -17,12 +17,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@WebMvcTest // 슬라이스 테스트 (최소한의 테스트)
 @Disabled("SpringDataRest 통합테스트는 불필요하므로 제외시킴")
 @DisplayName("Data Rest - API 테스트")
 @Transactional
-@AutoConfigureMockMvc
-@SpringBootTest
+// @AutoConfigureMockMvc + @SpringBootTest
+// => 프로젝트 내부에 있는 스프링 빈을 보두 등록하여 테스트에 필요한 의존성을 추가한다.
+// => 실제 운영환경에서 사용될 클래스들을 통합하여 테스트 하는 것.
+@AutoConfigureMockMvc // Mock 테스트 시 필요한 의존성을 제공한다.
+@SpringBootTest // 어플리케이션 내부의 모든 빈을 등록한다.
 public class DataRestTest {
     private final MockMvc mockMvc;
 
@@ -72,3 +74,4 @@ public class DataRestTest {
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.valueOf("application/hal+json")));
     }
 }
+//@WebMvcTest // 슬라이스 테스트 (최소한의 테스트)

@@ -1,10 +1,15 @@
-debug: false
+debug: false # debug 전체 true 하면 너무 정보가 많아서 복잡하니까 꺼준다
+
+# Actuator 감춰져 있는 모든 endpoint 보는 설정
+# 기본적으로 일부 엔드포인트만 노출한다. 모든 엔드 포인트를 노출하거나 선택적으로 노출하기 위한 설정 변경
 management.endpoints.web.exposure.include: "*"
 
+# log 설정
 logging:
   level:
-    com.grow.projectboard: debug
-    org.springframework.web.servlet: debug
+    com.grow.projectboard: debug # 루트 패키지에서 발생하는 모든 로그들은 debug 레벨로 보겠다
+    org.springframework.web.servlet: debug # request, response만 볼 수 있도록 web.servlet만 debug로 켜준다
+    # jpa 사용할 때 query log를 볼 때 binding parameter들을 보기 위한 설정(기본은 ?로 표현됨)
     org.hibernate.type.descriptor.sql.spi: trace
 
 spring:
@@ -14,16 +19,25 @@ spring:
     password: 1111
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
+    # 테스트용 데이터베이스 데이터 생성
     defer-datasource-initialization: true
+    # hibernate가 entity를 보고 ddl문을 자동으로 짜줌
     hibernate.ddl-auto: create
-    open-in-view: true
+    # OSIV(Open Session In View) => Hibernate Session ...영속성 컨텍스트의 생존 범위 관련 ...
+    open-in-view: false
     show-sql: true
     properties:
-      hibernate.format_sql: true
-      hibernate.default_batch_fetch_size: 100
+      hibernate.format_sql: true # 쿼리 예쁘게 출력
+      hibernate.default_batch_fetch_size: 100 #
   sql.init.mode: always
   data:
     rest:
       base-path: /api
       detection-strategy: annotated
   thymeleaf3.decoupled-logic: true
+  devtools:
+    restart:
+      enabled: true  # Automatic Restart 사용 여부
+    livereload:
+      enabled: true
+
