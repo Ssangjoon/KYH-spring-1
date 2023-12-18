@@ -23,6 +23,7 @@ public class ArticleService {
 
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticles(SearchType searchType, String searchKeyword, Pageable pageable) {
+        // blank => 빈문자열이거나 스페이스로만 이루어진 것도 포함한다.
         if(searchKeyword == null || searchKeyword.isBlank()){
             // service 코드는 도메인코드와 articleDto만 알게된다.
             return articleRepository.findAll(pageable).map(ArticleDto::from);
