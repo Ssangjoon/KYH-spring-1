@@ -1,7 +1,7 @@
 package com.grow.projectboard.controller;
 
 import com.grow.projectboard.dto.response.ArticleResponse;
-import com.grow.projectboard.dto.response.ArticleWithCommentResponse;
+import com.grow.projectboard.dto.response.ArticleWithCommentsResponse;
 import com.grow.projectboard.service.ArticleService;
 import com.grow.projectboard.service.PaginationService;
 import com.grow.projectboard.type.SearchType;
@@ -28,24 +28,31 @@ public class ArticleController {
     private final PaginationService paginationService;
 
     @GetMapping
-    public String articles(@RequestParam(required = false) SearchType searchType,
-                           @RequestParam(required = false) String searchValue,
-                           @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                           ModelMap map
-    ){
+    public String articles(
+            @RequestParam(required = false) SearchType searchType,
+            @RequestParam(required = false) String searchValue,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map
+    ) {
         Page<ArticleResponse> articles = articleService.searchArticles(searchType, searchValue, pageable).map(ArticleResponse::from);
         List<Integer> barNumbers = paginationService.getPaginationBarNumbers(pageable.getPageNumber(), articles.getTotalPages());
 
         map.addAttribute("articles", articles);
         map.addAttribute("paginationBarNumbers", barNumbers);
+        map.addAttribute("searchTypes", SearchType.values());
+
         return "articles/index";
     }
+
     @GetMapping("/{articleId}")
-    public String articles(@PathVariable Long articleId, ModelMap map){
-        ArticleWithCommentResponse article = ArticleWithCommentResponse.from(articleService.getArticle(articleId));
+    public String article(@PathVariable Long articleId, ModelMap map) {
+        ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticle(articleId));
+
         map.addAttribute("article", article);
-        map.addAttribute("articleComments", article.articleCommentResponses());
+        map.addAttribute("articleComments", article.articleCommentsResponse());
+        map.addAttribute("totalCount", articleService.getArticleCount());
 
         return "articles/detail";
     }
+
 }
