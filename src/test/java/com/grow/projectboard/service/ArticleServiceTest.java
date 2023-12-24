@@ -2,11 +2,11 @@ package com.grow.projectboard.service;
 
 import com.grow.projectboard.domain.Article;
 import com.grow.projectboard.domain.UserAccount;
+import com.grow.projectboard.domain.constant.SearchType;
 import com.grow.projectboard.dto.ArticleDto;
 import com.grow.projectboard.dto.ArticleWithCommentsDto;
 import com.grow.projectboard.dto.UserAccountDto;
 import com.grow.projectboard.repository.ArticleRepository;
-import com.grow.projectboard.type.SearchType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,7 +105,7 @@ class ArticleServiceTest {
         given(articleRepository.findById(articleId)).willReturn(Optional.of(article));
 
         // When
-        ArticleWithCommentsDto dto = sut.getArticle(articleId);
+        ArticleDto dto = sut.getArticle(articleId);
 
         // Then
         assertThat(dto)
@@ -152,11 +152,10 @@ class ArticleServiceTest {
         // Given
         Article article = createArticle();
         ArticleDto dto = createArticleDto("새 타이틀", "새 내용", "#springboot");
-            //
         given(articleRepository.getReferenceById(dto.id())).willReturn(article);
 
         // When
-        sut.updateArticle(dto);
+        sut.updateArticle(dto.id(), dto);
 
         // Then
         assertThat(article)
@@ -174,7 +173,7 @@ class ArticleServiceTest {
         given(articleRepository.getReferenceById(dto.id())).willThrow(EntityNotFoundException.class);
 
         // When
-        sut.updateArticle(dto);
+        sut.updateArticle(dto.id(), dto);
 
         // Then
         then(articleRepository).should().getReferenceById(dto.id());
@@ -262,7 +261,6 @@ class ArticleServiceTest {
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                1L,
                 "uno",
                 "password",
                 "uno@mail.com",

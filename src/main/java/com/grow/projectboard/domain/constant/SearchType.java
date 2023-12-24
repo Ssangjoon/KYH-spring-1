@@ -1,4 +1,4 @@
-package com.grow.projectboard.type;
+package com.grow.projectboard.domain.constant;
 
 import lombok.Getter;
 
