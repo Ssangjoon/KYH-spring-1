@@ -128,7 +128,6 @@ class ArticleCommentServiceTest {
         then(articleCommentRepository).should().deleteById(articleCommentId);
     }
 
-
     private ArticleCommentDto createArticleCommentDto(String content) {
         return ArticleCommentDto.of(
                 1L,
@@ -144,7 +143,6 @@ class ArticleCommentServiceTest {
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
-                1L,
                 "uno",
                 "password",
                 "uno@mail.com",
