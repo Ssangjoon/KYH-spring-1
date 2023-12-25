@@ -7,16 +7,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("JPA 연결 테스트")
 // JPA에 관련된 요소들만 테스트하기 위한 어노테이션으로 JPA 테스트에 관련된 설정들만 적용해준다.
-@Import(JpaConfig.class)
+@Import(JpaRepositoryTest.TestJpaConfig.class)
 // 메모리상에 내부 데이터베이스를 생성하고 @Entity 클래스들을 등록하고 JPA Repository 설정들을 해준다.
 // (Repository layer의 테스트를 위해서 내장 Memory DB를 많이 사용)
 // (보통 @SpringBootTest+ Memory DB 연결 or @DataJpaTest)
@@ -90,5 +95,13 @@ class JpaRepositoryTest {
 
         assertThat(articleRepository.count()).isEqualTo(previousArticleCount -1);
         assertThat(articleCommentRepository.count()).isEqualTo(priviousArticleCommnetCount - deletedCommentsSize);
+    }
+    @EnableJpaAuditing
+    @TestConfiguration
+    public static class TestJpaConfig {
+        @Bean
+        public AuditorAware<String> auditorAware(){
+            return () -> Optional.of("uno");
+        }
     }
 }
