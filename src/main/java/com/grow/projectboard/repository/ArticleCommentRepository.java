@@ -18,6 +18,7 @@ public interface ArticleCommentRepository extends
         QuerydslPredicateExecutor<ArticleComment>,
         QuerydslBinderCustomizer<QArticleComment> {
     List<ArticleComment> findByArticle_Id(Long articleId); // '_'사용하는 경우 연관관계로 들어있는 Article의 id로 조회한다.
+    void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
     @Override
     default void customize(QuerydslBindings bindings, QArticleComment root){
         bindings.excludeUnlistedProperties(true);
